@@ -50,7 +50,6 @@ df_t.loc[(df_t['Aline OKLS'] == 'shut'), 'Aline OKLS'] = '0' # remove shut value
 
 df_t[['Aline OKLS','Aline NKLS','Aline MWP']] = df_t[['Aline OKLS','Aline NKLS','Aline MWP']].apply(pd.to_numeric) #change dtype to int
 
-
 # collection of rules to apply values across columns based on value in another column - to allow forward fill to be used
 
 df_t.loc[(df_t['Aline OKLS'] == 100), ['Aline NKLS','Aline MWP', 'Aline Loose']] = 0
@@ -64,7 +63,37 @@ df_t.loc[(df_t['Aline NKLS'] + df_t['Aline MWP']) ==100, ['Aline OKLS', 'Aline L
 
 df_t[['Aline OKLS','Aline NKLS','Aline MWP']]=df_t[['Aline OKLS','Aline NKLS','Aline MWP']].ffill() # forward fill the columns
 
-df_Aline = df_t[['Date', 'Time', 'Aline OKLS','Aline NKLS','Aline MWP', 'Aline ToPlan']]
+df_ABline = df_t[['Date', 'Time', 'Aline OKLS','Aline NKLS','Aline MWP', 'Aline ToPlan']]
 
 
-df_Aline.to_csv(r"M:\Kemsley Paper Mill\Technical\Technical\PM4\Furnish Data\Aline Furnish (Complete).csv", index = False)
+#df_Aline.to_csv(r"M:\Kemsley Paper Mill\Technical\Technical\PM4\Furnish Data\Aline Furnish (Complete).csv", index = False)
+
+
+#--------------------B LINE ------------------------------------#
+df_t.drop(columns=["B-Line"], inplace=True)
+
+df_t.rename(columns={ df_t.columns[8]: "Bline OKLS" }, inplace = True)
+df_t.rename(columns={ df_t.columns[9]: "Bline NKLS" }, inplace = True)
+df_t.rename(columns={ df_t.columns[10]: "Bline MWP" }, inplace = True)
+df_t.rename(columns={ df_t.columns[11]: "Bline Loose" }, inplace = True)
+df_t.rename(columns={ df_t.columns[12]: "Bline ToPlan" }, inplace = True)
+df_t.rename(columns={ df_t.columns[13]: "Bline De-wires" }, inplace = True)
+
+df_t[['Bline OKLS','Bline NKLS','Bline MWP']] = df_t[['Bline OKLS','Bline NKLS','Bline MWP']].apply(pd.to_numeric) #change dtype to int
+
+df_t.loc[(df_t['Bline OKLS'] == 100), ['Bline NKLS','Bline MWP', 'Bline Loose']] = 0
+df_t.loc[(df_t['Bline OKLS'] == 0), ['Bline NKLS','Bline MWP', 'Bline Loose']] = 0
+df_t.loc[(df_t['Bline OKLS'] + df_t['Bline MWP']) ==100, ['Bline NKLS', 'Bline Loose']] = 0
+df_t.loc[(df_t['Bline OKLS'] + df_t['Bline NKLS']) ==100, ['Bline MWP', 'Bline Loose']] = 0
+df_t.loc[(df_t['Bline OKLS'] + df_t['Bline NKLS']+df_t['Bline MWP']) ==100, ['Bline Loose']] = 0
+
+df_t.loc[(df_t['Bline NKLS'] == 100), ['Bline OKLS','Bline MWP', 'Bline Loose']] = 0
+df_t.loc[(df_t['Bline NKLS'] + df_t['Bline MWP']) ==100, ['Bline OKLS', 'Bline Loose']] = 0
+
+df_t[['Bline OKLS','Bline NKLS','Bline MWP']]=df_t[['Bline OKLS','Bline NKLS','Bline MWP']].ffill() # forward fill the columns
+
+
+df_ABline = df_t[['Date', 'Time', 'Aline OKLS','Aline NKLS','Aline MWP', 'Aline ToPlan','Bline OKLS','Bline NKLS','Bline MWP', 'Bline ToPlan', 'C-Line Running (y/n)']]
+
+df_ABline.to_csv(r"M:\Kemsley Paper Mill\Technical\Technical\PM4\Furnish Data\ABline Furnish (Complete).csv", index = False)
+
